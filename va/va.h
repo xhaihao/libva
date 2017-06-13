@@ -553,6 +553,20 @@ typedef enum
      * See \c VA_PROCESSING_RATE_xxx for encode/decode processing rate 
      */
     VAConfigAttribProcessingRate    = 27,
+    /**
+     * \brief Encoding dirty region-of-interest. Read-only.
+     *
+     * This attribute conveys whether the driver supports dirty region-of-interest (ROI)
+     * encoding, based on user provided ROI rectangles which indicate the rectangular areas
+     * where the content has changed as compared to the previous picture.  The regions of the
+     * picture that are not covered by dirty ROI rectangles are assumed to have not changed
+     * compared to the previous picture.  The encoder may do some optimizations based on
+     * this information.  The attribute value returned indicates the number of regions that
+     * are supported.  e.g. A value of 0 means dirty ROI encoding is not supported.  If dirty
+     * ROI encoding is supported, the ROI information is passed to the driver using
+     * VAEncMiscParameterTypeDirtyRect.
+     */
+     VAConfigAttribEncDirtyRect       = 28,
 
     /**@}*/
     VAConfigAttribTypeMax
@@ -1345,6 +1359,8 @@ typedef enum
     VAEncMiscParameterTypeROI           = 10,
     /** \brief Buffer type used for temporal layer structure */
     VAEncMiscParameterTypeTemporalLayerStructure   = 12,
+    /** \brief Buffer type used for dirty region-of-interest (ROI) parameters. */
+    VAEncMiscParameterTypeDirtyRect      = 13,
 } VAEncMiscParameterType;
 
 /** \brief Packed header type. */
@@ -1713,6 +1729,25 @@ typedef struct _VAEncMiscParameterBufferROI {
         uint32_t value;
     } roi_flags;
 } VAEncMiscParameterBufferROI;
+/*
+ * \brief Dirty region-of-interest (ROI) data structure for encoding.
+ *
+ * The encoding dirty ROI can be set through VAEncMiscParameterBufferDirtyRect, if the
+ * implementation supports dirty ROI input. The ROI set through this structure is applicable
+ * only to the current frame or field, so must be sent every frame or field to be applied.
+ * The number of supported ROIs can be queried through the VAConfigAttribEncDirtyRect.  The
+ * encoder will use the ROI information to know those rectangle areas have changed while the
+ * areas not covered by dirty ROI rectangles are assumed to have not changed compared to the
+ * previous picture.  The encoder may do some internal optimizations.
+ */
+typedef struct _VAEncMiscParameterBufferDirtyRect
+{
+    /** \brief Number of ROIs being sent.*/
+    unsigned int    num_roi_rectangle;
+
+    /** \brief Pointer to a VARectangle array with num_roi_rectangle elements.*/
+     VARectangle    *roi_rectangle;
+} VAEncMiscParameterBufferDirtyRect;
 
 /**
  * There will be cases where the bitstream buffer will not have enough room to hold
