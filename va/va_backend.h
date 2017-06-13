@@ -435,6 +435,13 @@ struct VADriverVTable
             VADriverContextP    ctx,
             VABufferID          buf_id          /* in */
         );
+
+        VAStatus (*vaQueryProcessingRate) (
+               VADriverContextP ctx,
+               VAConfigID config_id,
+               VAProcessingRateParameter *proc_buf,
+               unsigned int *processing_rate	/* out */
+        );
 };
 
 struct VADriverContext
