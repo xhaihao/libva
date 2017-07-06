@@ -3719,10 +3719,8 @@ static void va_TraceVAEncPictureParameterBufferVP9(
     int i;
 
     va_TraceMsg(trace_ctx, "\t--VAEncPictureParameterBufferVP9\n");
-    va_TraceMsg(trace_ctx, "\tframe_width_src = %d\n", p->frame_width_src);
-    va_TraceMsg(trace_ctx, "\tframe_height_src = %d\n", p->frame_height_src);
-    va_TraceMsg(trace_ctx, "\tframe_width_dst = %d\n", p->frame_width_dst);
-    va_TraceMsg(trace_ctx, "\tframe_height_dst = %d\n", p->frame_height_dst);
+    va_TraceMsg(trace_ctx, "\tframe_width = %d\n", p->frame_width);
+    va_TraceMsg(trace_ctx, "\tframe_height = %d\n", p->frame_height);
     va_TraceMsg(trace_ctx, "\treconstructed_frame = 0x%08x\n", p->reconstructed_frame);
 
     for(i=0;i<8;i++)
