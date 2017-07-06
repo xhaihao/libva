@@ -738,6 +738,9 @@ typedef union _VAConfigAttribValDecJPEG {
 #define VA_ENC_PACKED_HEADER_MISC       0x00000008
 /** \brief Driver supports raw packed header, see VAEncPackedHeaderRawData */
 #define VA_ENC_PACKED_HEADER_RAW_DATA   0x00000010
+/** \brief Driver dont pack header, Application must send packed header */
+#define VA_ENC_PACKED_HEADER_ENFORCED   0x00010000
+
 /**@}*/
 
 /** @name Attribute values for VAConfigAttribEncInterlaced */
