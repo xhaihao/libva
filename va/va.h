@@ -2575,6 +2575,24 @@ VAStatus vaCreateBuffer (
 );
 
 /**
+ * Create a buffer for given width & height
+ * get unit_size, pitch, buf_id for 2D buffer
+ * for permb qp buffer, it will return unit_size for one MB or LCU
+ * and the pitch for alignments 
+ * can call vaMapBuffer with this Buffer ID to get virtual address. 
+ */
+VAStatus vaCreateBuffer2(
+    VADisplay dpy,
+    VAContextID context,
+    VABufferType type,
+    unsigned int width,
+    unsigned int height,
+    unsigned int *unit_size,
+    unsigned int *pitch,
+    VABufferID *buf_id
+);
+
+/**
  * Convey to the server how many valid elements are in the buffer. 
  * e.g. if multiple slice parameters are being held in a single buffer,
  * this will communicate to the server the number of slice parameters

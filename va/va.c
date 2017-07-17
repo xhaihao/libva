@@ -1184,10 +1184,37 @@ VAStatus vaCreateBuffer (
 
   VA_FOOL_FUNC(va_FoolCreateBuffer, dpy, context, type, size, num_elements, data, buf_id);
 
-  vaStatus = ctx->vtable->vaCreateBuffer( ctx, context, type, size, num_elements, data, buf_id);
+  vaStatus = ctx->vtable->vaCreateBuffer( ctx, context, type, size, num_elements, data, NULL, NULL, buf_id );
 
   VA_TRACE_LOG(va_TraceCreateBuffer,
                dpy, context, type, size, num_elements, data, buf_id);
+  
+  return vaStatus;
+}
+
+VAStatus vaCreateBuffer2 (
+    VADisplay dpy,
+    VAContextID context,
+    VABufferType type,
+    unsigned int width,
+    unsigned int height,
+    unsigned int *unit_size,
+    unsigned int *pitch,
+    VABufferID *buf_id
+)
+{
+  VADriverContextP ctx;
+  VAStatus vaStatus;
+  
+  CHECK_DISPLAY(dpy);
+  ctx = CTX(dpy);
+
+  VA_FOOL_FUNC(va_FoolCreateBuffer, dpy, context, type, width, height, NULL, buf_id);
+
+  vaStatus = ctx->vtable->vaCreateBuffer( ctx, context, type, width, height ,NULL, unit_size, pitch, buf_id);
+
+  VA_TRACE_LOG(va_TraceCreateBuffer,
+               dpy, context, type, width, height, NULL, buf_id);
   
   return vaStatus;
 }

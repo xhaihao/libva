@@ -140,7 +140,9 @@ struct VADriverVTable
 		unsigned int size,		/* in */
 		unsigned int num_elements,	/* in */
 		void *data,			/* in */
-		VABufferID *buf_id		/* out */
+                unsigned int *unit_size,
+                unsigned int *pitch,
+                VABufferID *buf_id
 	);
 
 	VAStatus (*vaBufferSetNumElements) (
