@@ -20,22 +20,22 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-pcfiles		 = libva-@LIBVA_LIB_VERSION@.pc
-pcfiles		+= libva-tpi-@LIBVA_LIB_VERSION@.pc
+pcfiles		 = libva.pc
+pcfiles		+= libva-tpi.pc
 if USE_DRM
-pcfiles		+= libva-drm-@LIBVA_LIB_VERSION@.pc
+pcfiles		+= libva-drm.pc
 endif
 if USE_X11
-pcfiles		+= libva-x11-@LIBVA_LIB_VERSION@.pc
+pcfiles		+= libva-x11.pc
 endif
 if USE_GLX
-pcfiles		+= libva-glx-@LIBVA_LIB_VERSION@.pc
+pcfiles		+= libva-glx.pc
 endif
 if USE_EGL
-pcfiles		+= libva-egl-@LIBVA_LIB_VERSION@.pc
+pcfiles		+= libva-egl.pc
 endif
 if USE_WAYLAND
-pcfiles		+= libva-wayland-@LIBVA_LIB_VERSION@.pc
+pcfiles		+= libva-wayland.pc
 endif
 
 all_pcfiles_in	 = libva.pc.in
@@ -52,10 +52,6 @@ pkgconfig_DATA = $(pcfiles)
 EXTRA_DIST = $(all_pcfiles_in)
 
 DISTCLEANFILES = $(pcfiles)
-
-### how to generate pc files
-%-@LIBVA_LIB_VERSION@.pc: %.pc
-	@cp $< $@
 
 # Extra clean files so that maintainer-clean removes *everything*
 MAINTAINERCLEANFILES = Makefile.in
