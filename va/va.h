@@ -1498,6 +1498,13 @@ typedef enum
     VAStatsStatisticsBottomFieldBufferType = 50,
     VAStatsMVBufferType                 = 51,
     VAStatsMVPredictorBufferType        = 52,
+    /** Force MB's to be non skip for encode.it's per-mb control buffer, The width of the MB map
+     * Surface is (width of the Picture in MB unit) * 1 byte, multiple of 64 bytes.
+     * The height is (height of the picture in MB unit). The picture is either
+     * frame or non-interleaved top or bottom field.  If the application provides this
+     *surface, it will override the "skipCheckDisable" setting in VAEncMiscParameterEncQuality.
+     */
+    VAEncMacroblockDisableSkipMapBufferType = 53,
     VABufferTypeMax
 } VABufferType;
 
