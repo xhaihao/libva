@@ -1505,6 +1505,10 @@ typedef enum
      *surface, it will override the "skipCheckDisable" setting in VAEncMiscParameterEncQuality.
      */
     VAEncMacroblockDisableSkipMapBufferType = 53,
+    /** decode stream out buffer, intermedia data of decode, it may include MV, MB mode etc.
+      * it can be used to detect motion and analyze the frame contain
+      * different vendor should has different layout  */
+    VADecodeStreamoutBufferType             = 56,
     VABufferTypeMax
 } VABufferType;
 
