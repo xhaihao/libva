@@ -60,7 +60,7 @@
  * .LIBVA_TRACE_BUFDATA: dump all VA data buffer into log_file
  * .LIBVA_TRACE_CODEDBUF=coded_clip_file: save the coded clip into file coded_clip_file
  * .LIBVA_TRACE_SURFACE=yuv_file: save surface YUV into file yuv_file. Use file name to determine
- *                                decode/encode or jpeg surfaces
+ *                                decode/encode, jpeg or vpp surfaces
  * .LIBVA_TRACE_SURFACE_GEOMETRY=WIDTHxHEIGHT+XOFF+YOFF: only save part of surface context into file
  *                                due to storage bandwidth limitation
  */
@@ -792,6 +792,8 @@ void va_TraceInit(VADisplay dpy)
             va_trace_flag |= VA_TRACE_FLAG_SURFACE_ENCODE;
         if (strstr(env_value, "jpeg") || strstr(env_value, "jpg"))
             va_trace_flag |= VA_TRACE_FLAG_SURFACE_JPEG;
+        if (strstr(env_value, "vpp"))
+            va_trace_flag |= VA_TRACE_FLAG_SURFACE_VPP;
 
         if (va_parseConfig("LIBVA_TRACE_SURFACE_GEOMETRY", &env_value[0]) == 0) {
             char *p = env_value, *q;
@@ -1296,7 +1298,7 @@ void va_TraceCreateContext(
     struct va_trace *pva_trace = NULL;
     struct trace_context *trace_ctx = NULL;
     int tra_ctx_id = 0;
-    int encode = 0, decode = 0, jpeg = 0;
+    int encode = 0, decode = 0, jpeg = 0, vpp = 0;
     int i;
 
     pva_trace = (struct va_trace *)(((VADisplayContextP)dpy)->vatrace);
@@ -1382,9 +1384,12 @@ void va_TraceCreateContext(
         trace_ctx->trace_entrypoint == VAEntrypointEncSliceLP);
     decode = (trace_ctx->trace_entrypoint == VAEntrypointVLD);
     jpeg = (trace_ctx->trace_entrypoint == VAEntrypointEncPicture);
+    vpp = (trace_ctx->trace_entrypoint == VAEntrypointVideoProc);
+
     if ((encode && (va_trace_flag & VA_TRACE_FLAG_SURFACE_ENCODE)) ||
         (decode && (va_trace_flag & VA_TRACE_FLAG_SURFACE_DECODE)) ||
-        (jpeg && (va_trace_flag & VA_TRACE_FLAG_SURFACE_JPEG))) {
+        (jpeg && (va_trace_flag & VA_TRACE_FLAG_SURFACE_JPEG)) ||
+        (vpp && (va_trace_flag & VA_TRACE_FLAG_SURFACE_VPP))) {
         if(open_tracing_specil_file(pva_trace, trace_ctx, 1) < 0) {
             va_errorMessage(dpy, "Open surface fail failed for ctx 0x%08x\n", *context);
 
@@ -5045,7 +5050,7 @@ void va_TraceEndPicture(
     int endpic_done
 )
 {
-    int encode, decode, jpeg;
+    int encode, decode, jpeg, vpp;
     DPY2TRACECTX(dpy, context, VA_INVALID_ID);
 
     TRACE_FUNCNAME(idx);
@@ -5058,6 +5063,7 @@ void va_TraceEndPicture(
         trace_ctx->trace_entrypoint == VAEntrypointEncSliceLP);
     decode = (trace_ctx->trace_entrypoint == VAEntrypointVLD);
     jpeg = (trace_ctx->trace_entrypoint == VAEntrypointEncPicture);
+    vpp = (trace_ctx->trace_entrypoint == VAEntrypointVideoProc);
 
     /* trace encode source surface, can do it before HW completes rendering */
     if ((encode && (va_trace_flag & VA_TRACE_FLAG_SURFACE_ENCODE))||
@@ -5066,6 +5072,12 @@ void va_TraceEndPicture(
     
     /* trace decoded surface, do it after HW completes rendering */
     if (decode && ((va_trace_flag & VA_TRACE_FLAG_SURFACE_DECODE))) {
+        vaSyncSurface(dpy, trace_ctx->trace_rendertarget);
+        va_TraceSurface(dpy, context);
+    }
+
+    /* trace processed surface, do it after HW completes rendering */
+    if (vpp && ((va_trace_flag & VA_TRACE_FLAG_SURFACE_VPP))) {
         vaSyncSurface(dpy, trace_ctx->trace_rendertarget);
         va_TraceSurface(dpy, context);
     }

@@ -37,9 +37,11 @@ extern int va_trace_flag;
 #define VA_TRACE_FLAG_SURFACE_DECODE  0x8
 #define VA_TRACE_FLAG_SURFACE_ENCODE  0x10
 #define VA_TRACE_FLAG_SURFACE_JPEG    0x20
+#define VA_TRACE_FLAG_SURFACE_VPP     0x40
 #define VA_TRACE_FLAG_SURFACE         (VA_TRACE_FLAG_SURFACE_DECODE | \
                                        VA_TRACE_FLAG_SURFACE_ENCODE | \
-                                       VA_TRACE_FLAG_SURFACE_JPEG)
+                                       VA_TRACE_FLAG_SURFACE_JPEG | \
+                                       VA_TRACE_FLAG_SURFACE_VPP)
 
 #define VA_TRACE_LOG(trace_func,...)            \
     if (va_trace_flag & VA_TRACE_FLAG_LOG) {    \
