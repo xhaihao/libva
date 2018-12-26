@@ -1378,7 +1378,8 @@ void va_TraceCreateContext(
         trace_ctx->trace_surface_height = picture_height;
 
     /* avoid to create so many empty files */
-    encode = (trace_ctx->trace_entrypoint == VAEntrypointEncSlice);
+    encode = (trace_ctx->trace_entrypoint == VAEntrypointEncSlice ||
+        trace_ctx->trace_entrypoint == VAEntrypointEncSliceLP);
     decode = (trace_ctx->trace_entrypoint == VAEntrypointVLD);
     jpeg = (trace_ctx->trace_entrypoint == VAEntrypointEncPicture);
     if ((encode && (va_trace_flag & VA_TRACE_FLAG_SURFACE_ENCODE)) ||
@@ -5053,7 +5054,8 @@ void va_TraceEndPicture(
     va_TraceMsg(trace_ctx, "\trender_targets = 0x%08x\n", trace_ctx->trace_rendertarget);
 
     /* avoid to create so many empty files */
-    encode = (trace_ctx->trace_entrypoint == VAEntrypointEncSlice);
+    encode = (trace_ctx->trace_entrypoint == VAEntrypointEncSlice ||
+        trace_ctx->trace_entrypoint == VAEntrypointEncSliceLP);
     decode = (trace_ctx->trace_entrypoint == VAEntrypointVLD);
     jpeg = (trace_ctx->trace_entrypoint == VAEntrypointEncPicture);
 
