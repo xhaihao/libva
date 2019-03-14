@@ -997,7 +997,9 @@ static void va_TraceSurface(VADisplay dpy, VAContextID context)
     Y_data = (unsigned char*)buffer;
     UV_data = (unsigned char*)buffer + chroma_u_offset;
 
-    if (fourcc == VA_FOURCC_P010)
+    if (fourcc == VA_FOURCC_AYUV)
+        pixel_byte = 4;
+    else if (fourcc == VA_FOURCC_P010)
         pixel_byte = 2;
     else
         pixel_byte = 1;
@@ -1012,14 +1014,16 @@ static void va_TraceSurface(VADisplay dpy, VAContextID context)
         tmp += luma_stride;
     }
 
-    tmp = UV_data + chroma_u_stride * trace_ctx->trace_surface_yoff / 2;
-    if (fourcc == VA_FOURCC_NV12 || fourcc == VA_FOURCC_P010) {
-        for (i=0; i<trace_ctx->trace_surface_height/2; i++) {
-            fwrite(tmp + trace_ctx->trace_surface_xoff,
-                   trace_ctx->trace_surface_width,
-                   pixel_byte, trace_ctx->trace_fp_surface);
-            
-            tmp += chroma_u_stride;
+    if (fourcc != VA_FOURCC_AYUV) {
+        tmp = UV_data + chroma_u_stride * trace_ctx->trace_surface_yoff / 2;
+        if (fourcc == VA_FOURCC_NV12 || fourcc == VA_FOURCC_P010) {
+            for (i=0; i<trace_ctx->trace_surface_height/2; i++) {
+                fwrite(tmp + trace_ctx->trace_surface_xoff,
+                       trace_ctx->trace_surface_width,
+                       pixel_byte, trace_ctx->trace_fp_surface);
+
+                tmp += chroma_u_stride;
+            }
         }
     }
 
